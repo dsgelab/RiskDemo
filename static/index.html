@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Small Q&A Demo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        
+    </script>
+</head>
+<body>
+    <div class="row" style="padding: 2% 5% 0% 5%;">
+        <div class="col-md-7">
+            <b>Question: </b><br>
+            <input type="text" id="prompt" placeholder="What is your question?" value="" style="width: 95%; margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; padding:10px; text-align: center; font-size: 12pt;"><br>
+            <button id="submit" style="width: 100px; margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; text-align: center; color: white; background: #f0ad4e; font-size: 12pt; padding:10px;">
+                Submit
+            </button>
+            <img src="loading.gif" id="img" style="height: 45px; display:none;">
+            <br><br>
+            <b>Answer: </b><br>
+            <textarea id="curr_prompt" rows="2" value="" style="width: 95%; margin: 5px; border:transparent; text-align: center;font-size: 12pt; padding:10px;"></textarea>
+            <textarea id="result" rows="15" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; text-align: center; font-size: 12pt; padding:10px;"></textarea>
+        </div>
+        <div class="col-md-5">
+            <!-- <input id="prior_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
+            <div id="form"></div>
+            <br>
+            <!-- <input id="post_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
+        </div>
+
+    </div>
+    <input id="secret_box" style="display:none">
+    
+	<!-- <div style="padding: 4% 10% 2% 10%;"> 
+        
+    </div>
+    <input id="curr_prompt" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;">
+    <div style="padding: 2% 10% 2% 10%;">
+        
+    </div> -->
+    <script type="text/javascript">
+        // var str = "Mr Blue has a blue house and a blue car";
+        // var res = str.replace(/blue|house|car/gi, function (x) {
+        //   return x.toUpperCase();
+        // });
+        $('#submit').click(function () {
+            $("#result").val('');
+            $("#curr_prompt").val('');
+            $('#form').html('');
+            var prompt = $('#prompt').val();
+            if (prompt == ""){
+                alert("Please put your question in the text box.");
+            } else{
+                $('#img').show();
+//                $("#secret_box").hide();
+                var input = JSON.stringify({'prompt' : prompt});
+                $.ajax({
+                    datatype: 'json',
+                    url: '/translate',
+                    type: 'POST',
+                    data: input,
+                    contentType: "application/json; charset=utf-8",
+                    success: function(message){
+                        var res = message['message']['answer'];
+                        // alert(JSON.stringify(res));
+                        var text_pre = message['message']['text_pre'];
+                        var list_pre = message['message']['list_pre'];
+                        var text_post = message['message']['text_post'];
+                        var list_post = message['message']['list_post'];
+                        // alert(typeof(list_pre));
+                        // alert(JSON.stringify(list_pre));
+                        $('#img').hide();
+                        if (list_pre.length == 1 && list_post.length == 1) {
+                            res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+list_pre[0]+' $3');
+                            res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+list_post[0]+' $3');
+                            $("#curr_prompt").val($('#prompt').val());
+                            $('#prompt').val('');
+                            $("#result").val(res);
+//                            alert('1');
+                        } else {
+                            if (list_pre.length > 1) {
+                                $("#form").append('<p>'+text_pre+'</p><br>');
+//                                $("#form").append('<input checked type="radio" name="prior_disease" value=""> None of them<br>');
+                                <!--$("#form").append(<p>);-->
+                                for (var i = 0; i < list_pre.length; i++ ) {
+                                    option = '<label><input type="radio" name="prior_disease" value="'+list_pre[i]+'"> '+list_pre[i]+'</label><br>';
+                                    $("#form").append(option);
+                                }
+                                $("#form").append('<br>');
+//                                alert('2-1');
+                            } else if (list_pre.length == 1) {
+                                // replace
+                                res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+list_pre[0]+' $3');
+//                                alert('2-2');
+                            } else {
+                                // question + text box
+                                $("#form").append('<p>'+text_pre+'</p><br><textarea id="textarea_pre" rows="3" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid; text-align: center; font-size: 12pt; padding:10px;"></textarea><br>');
+//                                alert('2-3');
+                            }
+                            if (list_post.length > 1) {
+                                $("#form").append('<p>'+text_post+'</p><br>');
+                                for (var i = 0; i < list_pre.length; i++ ) {
+                                    option = '<input type="radio" name="post_disease" value="'+list_post[i]+'"> '+list_post[i]+'<br>';
+                                    $("#form").append(option);
+                                }
+                                $("#form").append('<br>');
+//                                alert('3-1');
+                            } else if (list_post.length == 1) {
+                                // replace
+                                res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+list_post[0]+' $3');
+//                                alert('3-2');
+                            } else {
+                                // question + text box
+                                $("#form").append('<p>'+text_post+'</p><br><textarea id="textarea_post" rows="3" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid; text-align: center; font-size: 12pt; padding:10px;"></textarea><br>');
+                                alert('3-3');
+                            }
+                            $("#form").append('<button id="sub">Submit</button>');
+//                            $("#form").append('<p><input id="sub" type="submit" value="Submit"></p>');
+                            // $('#prior_text').val(text_pre);
+                            // $('#post_text').val(text_post);
+                            $("#secret_box").val(res);
+                            // $("#result").val(res);
+                        }
+
+                        $('#sub').click(function () {
+//                            alert(this.id);
+                            var pre_disease = $("input[name=prior_disease]:checked").val();
+                            res = $('#secret_box').val();
+                            if(pre_disease){
+                                res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+pre_disease+' $3');
+                                $("#secret_box").val(res);
+//                                $("#secret_box").show();
+                            }
+                            var post_disease = $("input[name='post_disease']:checked").val();
+                            if(post_disease){
+                                res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+post_disease+' $3');
+                                $("#secret_box").val(res);
+                            }
+//                            res = res.replace(/\\n/i,'&#13;&#10;');
+                            $("#result").val('\n\n'+res);
+//                            alert( $("#result").val());
+                            $("#curr_prompt").val($("#prompt").val());
+                            $("#prompt").val('');
+                        });
+                        
+                    }
+                })
+            }
+        });
+
+    </script>   
+</body>
