@@ -6,50 +6,49 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-    <script type="text/javascript">
-        
-    </script>
+    <link rel="stylesheet" href="../css/base.css">
+    <!--<script type="text/javascript">-->
+        <!---->
+    <!--</script>-->
 </head>
-<body>
-    <div class="row" style="padding: 2% 5% 0% 5%;">
-        <div class="col-md-7">
-            <b>Question: </b><br>
-            <input type="text" id="prompt" placeholder="What is your question?" value="" style="width: 95%; margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; padding:10px; text-align: center; font-size: 12pt;"><br>
-            <button id="submit" style="width: 100px; margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; text-align: center; color: white; background: #f0ad4e; font-size: 12pt; padding:10px;">
-                Submit
-            </button>
-            <img src="loading.gif" id="img" style="height: 45px; display:none;">
-            <br><br>
-            <b>Answer: </b><br>
-            <textarea id="curr_prompt" rows="2" value="" style="width: 95%; margin: 5px; border:transparent; text-align: center;font-size: 12pt; padding:10px;"></textarea>
-            <textarea id="result" rows="15" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid #f0ad4e; text-align: center; font-size: 12pt; padding:10px;"></textarea>
-        </div>
-        <div class="col-md-5">
-            <!-- <input id="prior_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
-            <div id="form"></div>
-            <br>
-            <!-- <input id="post_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
+<body class="home">
+    <nav class="navbar navbar-fixed-top" style="background-color: #336ca9;">
+        <div class="navbar-header">
+            <h4 style="color: white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPT3 Query Demo - Risk of Diseases</h4>
         </div>
 
+    </nav>
+    <div class="container-fluid">
+        <div class="row" style="padding: 2% 4% 0 4%;">
+            <div class="col-md-7">
+                <b>Question: </b><br>
+                <input type="text" id="prompt" placeholder="What is your question?" value="" style="width: 95%; margin: 5px; border-radius:5px;border: 2px solid #336ca9; padding:10px; text-align: center; font-size: 12pt;"><br>
+                <button id="submit" style="width: 100px; margin: 5px; border-radius:5px;border: 2px solid #336ca9; text-align: center; color: white; background: #336ca9; font-size: 12pt; padding:10px;">
+                    Submit
+                </button>
+                <img src="loading.gif" id="img" style="height: 45px; display:none;">
+                <div id="curr_prompt" style="width: 95%; margin: 5px; font-size: 12pt; padding:10px;"><br><br></div>
+                <b>Answer: </b><br>
+                <div class="scroll" id="result" style="height:390px; width: 95%;margin: 5px; border-radius:5px;border: 2px solid #336ca9; font-size: 12pt; padding:10px;"></div>
+            </div>
+            <div class="col-md-5">
+                <!-- <input id="prior_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
+                <div id="form" class="scroll" style="height: 630px;"></div>
+                <br>
+                <!-- <input id="post_text" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;"> -->
+            </div>
+
+        </div>
+        <input id="secret_box" style="display:none">
     </div>
-    <input id="secret_box" style="display:none">
-    
-	<!-- <div style="padding: 4% 10% 2% 10%;"> 
-        
-    </div>
-    <input id="curr_prompt" value="" style="width: 95%; margin: 15px; border:transparent; text-align: center;font-size: 12pt; padding:15px;">
-    <div style="padding: 2% 10% 2% 10%;">
-        
-    </div> -->
+
+
     <script type="text/javascript">
-        // var str = "Mr Blue has a blue house and a blue car";
-        // var res = str.replace(/blue|house|car/gi, function (x) {
-        //   return x.toUpperCase();
-        // });
         $('#submit').click(function () {
-            $("#result").val('');
-            $("#curr_prompt").val('');
+            $("#result").empty;
+            $("#curr_prompt").empty();
+            $("#curr_prompt").append('<br><br>');
+            $("#result").empty();
             $('#form').html('');
             var prompt = $('#prompt').val();
             if (prompt == ""){
@@ -66,84 +65,122 @@
                     contentType: "application/json; charset=utf-8",
                     success: function(message){
                         var res = message['message']['answer'];
-                        // alert(JSON.stringify(res));
-                        var text_pre = message['message']['text_pre'];
-                        var list_pre = message['message']['list_pre'];
-                        var text_post = message['message']['text_post'];
-                        var list_post = message['message']['list_post'];
-                        // alert(typeof(list_pre));
+                        var question_index = message['message']['question_index'];
+                        var question_dict = message['message']['question_dict'];
+                        var choice_dict = message['message']['choice_dict'];
+
+//                         alert(typeof(question_index));
                         // alert(JSON.stringify(list_pre));
                         $('#img').hide();
-                        if (list_pre.length == 1 && list_post.length == 1) {
-                            res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+list_pre[0]+' $3');
-                            res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+list_post[0]+' $3');
-                            $("#curr_prompt").val($('#prompt').val());
-                            $('#prompt').val('');
-                            $("#result").val(res);
-//                            alert('1');
-                        } else {
-                            if (list_pre.length > 1) {
-                                $("#form").append('<p>'+text_pre+'</p><br>');
-//                                $("#form").append('<input checked type="radio" name="prior_disease" value=""> None of them<br>');
-                                <!--$("#form").append(<p>);-->
-                                for (var i = 0; i < list_pre.length; i++ ) {
-                                    option = '<label><input type="radio" name="prior_disease" value="'+list_pre[i]+'"> '+list_pre[i]+'</label><br>';
-                                    $("#form").append(option);
-                                }
-                                $("#form").append('<br>');
-//                                alert('2-1');
-                            } else if (list_pre.length == 1) {
-                                // replace
-                                res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+list_pre[0]+' $3');
-//                                alert('2-2');
-                            } else {
-                                // question + text box
-                                $("#form").append('<p>'+text_pre+'</p><br><textarea id="textarea_pre" rows="3" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid; text-align: center; font-size: 12pt; padding:10px;"></textarea><br>');
-//                                alert('2-3');
-                            }
-                            if (list_post.length > 1) {
-                                $("#form").append('<p>'+text_post+'</p><br>');
-                                for (var i = 0; i < list_pre.length; i++ ) {
-                                    option = '<input type="radio" name="post_disease" value="'+list_post[i]+'"> '+list_post[i]+'<br>';
-                                    $("#form").append(option);
-                                }
-                                $("#form").append('<br>');
-//                                alert('3-1');
-                            } else if (list_post.length == 1) {
-                                // replace
-                                res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+list_post[0]+' $3');
-//                                alert('3-2');
-                            } else {
-                                // question + text box
-                                $("#form").append('<p>'+text_post+'</p><br><textarea id="textarea_post" rows="3" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid; text-align: center; font-size: 12pt; padding:10px;"></textarea><br>');
-                                alert('3-3');
-                            }
+
+                        if (question_index == {'pair':0,'age':0,'sex':0}) {
+                            $("#form").append('<div class="scroll"><b>Please select the length of the follow-up years.</b><br><br>');
+                            option = '<label><input type="radio" name="years" value="1"> 1 year </label><br><label><input type="radio" name="years" value="5"> 5 years </label><br><label><input type="radio" name="years" value="15"> 15 years </label><br><label><input type="radio" name="years" value="0"> All data </label><br>';
+                            $("#form").append(option+'<br>');
                             $("#form").append('<button id="sub">Submit</button>');
-//                            $("#form").append('<p><input id="sub" type="submit" value="Submit"></p>');
-                            // $('#prior_text').val(text_pre);
-                            // $('#post_text').val(text_post);
                             $("#secret_box").val(res);
-                            // $("#result").val(res);
+                        } else if (question_index['pair'] == 2) {
+                            $("#form").append('<p style="color:#336ca9">Sorry, but the disease you described cannot be found in the database. Have another try in the Question box please.</p><br><br>');
+                            $("#curr_prompt").empty();
+                            $("#curr_prompt").append('You just asked  -  '+$('#prompt').val());
+                            $('#prompt').val('');
+                        } else {
+                            if (question_index['age'] == 1) {
+                                $("#form").append('<b>' + question_dict['age'] + '</b><br><input id="age" style="width: 95%;margin: 5px; border-radius:5px;border: 2px solid; text-align: center; font-size: 12pt; padding:10px;"><br><br>');
+//                                alert('3-1');
+                            }
+
+                            if (question_index['sex'] == 1) {
+                                $("#form").append('<b>'+question_dict['sex']+'</b><br><br>');
+                                option = '<label><input type="radio" name="sex" value="0"> Male </label> <br><label><input type="radio" name="sex" value="1"> Female </label><br>';
+                                $("#form").append(option+'<br>');
+//                                alert('4-1');
+                            }
+
+                            if (question_index['pair'] == 1) {
+                                $("#form").append('<b>'+question_dict['pair']+'</b><br><br><div class="scroll"><p style="color:#336ca9"><b>The disease you have:</b></p>');
+                                for (var i = 0; i < choice_dict['pre'].length; i++ ) {
+                                    option = '<label><input type="radio" name="prior_disease" value="'+ choice_dict['pre'][i]+'"> '+choice_dict['pre'][i].replace('&',',')+'</label><br>';
+                                    $("#form").append(option);
+                                }
+                                $("#form").append('</div><br><div class="scroll"><p style="color:#336ca9"><b>The risk you concern:</b></p>');
+                                for (var i = 0; i < choice_dict['post'].length; i++ ) {
+                                    option = '<label><input type="radio" name="post_disease" value="'+ choice_dict['post'][i]+'"> '+choice_dict['post'][i].replace('&',',')+'</label><br>';
+                                    $("#form").append(option);
+                                }
+                                $("#form").append('</div><br>');
+
+//                                alert('1-1');
+                            }
+
+                            $("#form").append('<div class="scroll"><b>Please select the length of the follow-up years.</b><br><br>');
+                            option = '<label><input type="radio" name="years" value="1"> 1 year </label><br><label><input type="radio" name="years" value="5"> 5 years </label><br><label><input type="radio" name="years" value="15"> 15 years </label><br><label><input type="radio" name="years" value="0"> All data </label><br>';
+                            $("#form").append(option+'<br>');
+                            $("#form").append('<button id="sub">Submit</button>');
+                            $("#secret_box").val(res);
+
                         }
 
+
+
                         $('#sub').click(function () {
-//                            alert(this.id);
-                            var pre_disease = $("input[name=prior_disease]:checked").val();
-                            res = $('#secret_box').val();
+                            // TODO: what if no value is checked or no answer is filled?
+
+                            $(this).prop("disabled",true);
+                            var res = $('#secret_box').val();  // res is a string
+
+                            var pre_disease = $("input[name='prior_disease']:checked").val();
                             if(pre_disease){
-                                res = res.replace(/(prior = ")([a-z][a-z\s]*)(")/i,'$1 '+pre_disease+' $3');
-                                $("#secret_box").val(res);
-//                                $("#secret_box").show();
+                                res = pre_disease+ ',' + res.split(',').slice(1, 4).join(",");
                             }
+
                             var post_disease = $("input[name='post_disease']:checked").val();
                             if(post_disease){
-                                res = res.replace(/(outcome = ")([a-z][a-z\s]*)(")/i,'$1 '+post_disease+' $3');
-                                $("#secret_box").val(res);
+                                res = res.split(',')[0] + ',' + post_disease+ ',' + res.split(',').slice(2, 4).join(",");
                             }
-//                            res = res.replace(/\\n/i,'&#13;&#10;');
-                            $("#result").val('\n\n'+res);
-//                            alert( $("#result").val());
-                            $("#curr_prompt").val($("#prompt").val());
+
+//                            var textarea_pre = $("#textarea_pre").val();
+//                            if(textarea_pre){
+//                                res = res.split(',').slice(0, 3).join(",") + ',' + sex;
+//                            }
+
+                            var sex = $("input[name='sex']:checked").val();
+                            if(sex){
+                                res = res.split(',').slice(0, 3).join(",") + ',' + sex;
+                            }
+                            var age = $("#age").val();
+//                            alert(age);
+                            if(age){
+                                res = res.split(',').slice(0, 2).join(",") + ',' + age + ',' + res.split(',')[3];
+                            }
+
+                            $("#secret_box").val(res);
+
+                            var years = $("input[name='years']:checked").val();
+
+                            var prior = res.split(',')[0].replace('&',','),
+                                outcome = res.split(',')[1].replace('&',','),
+                                query1 = "SELECT * FROM cox_hrs as c, phenocodes as p_a, phenocodes as p_b WHERE p_a.id = c.prior_id AND p_b.id = c.outcome_id AND c.lagged_hr_cut_year = <span style='color: #dd8c8f'>"+years+"</span> AND p_a.longname =  '<span style='color: #dd8c8f'>" + prior + "</span>' AND p_b.longname = '<span style='color: #dd8c8f'>" + outcome + "</span>';",
+                                query2 = "mean_indiv = pd.DataFrame({'BIRTH_TYEAR': [datetime.datetime.today().year - int(<span style='color: #dd8c8f'>"+res.split(',')[2]+"</span>)], 'endpoint': [True],'female': <span style='color: #dd8c8f'>"+res.split(',')[3]+"</span>";
+                                query3 = "1 - np.exp(- r.bch_year_21p99 * np.exp( np.dot(lifelines.utils.normalize(mean_indiv, mean=[r.year_norm_mean, r.prior_norm_mean, r.sex_norm_mean], std=1), [r.year_coef, r.prior_coef, r.sex_coef])))[0]";
+
+                            var input = JSON.stringify({'result':res, 'years':years});
+                            $.ajax({
+                                datatype: 'json',
+                                url: '/getRisk',
+                                type: 'POST',
+                                data: input,
+                                contentType: "application/json; charset=utf-8",
+                                success: function(message) {
+                                    var part1 = message['message']['part1'],
+                                            part2 = message['message']['part2'];
+                                    $("#result").append(part1+"<span style='color: #dd8c8f'>"+part2+'</span><br><br><b style="color: #336ca9">Query:</b><br>'+query1+'<br><br>'+query2+'<br><br><b style="color: #336ca9">Formula:</b><br>'+query3);
+                                    // alert( $("#result").val());
+
+                                }
+                            });
+                            $("#curr_prompt").empty();
+                            $("#curr_prompt").append('You just asked  -  '+$("#prompt").val());
                             $("#prompt").val('');
                         });
                         
