@@ -19,16 +19,16 @@ global gpt
 # openai.api_key = "sk-MKxaEJsHbFyW5U7bP2e0d2B9mzpoAxuWQ73sDmo2" #old
 openai.api_key = "sk-BOwN8oP1QsmOe2SaXqnuy7U65UkPm1f72xGAYsRm" #new
 
-gpt = GPT(engine="davinci",
+gpt = GPT(engine="curie",
           temperature=0,
           max_tokens=300)
-
+# davinci curie babbage ada
 
 gpt.add_example(
     Example('I am a 78-year-old man with angina. What is my risk of having heart failure?',
             'angina, heart failure, 78, male'))
 gpt.add_example(
-    Example('I am a 53-year-old woman with a history of stroke. What is my risk of having angina?',
+    Example('What is my risk of having angina if I am a 53-year-old woman with a history of stroke?',
             'stroke, angina, 53, female'))
 gpt.add_example(
     Example('I am at 40 with angina. What is my risk of having headache?',
@@ -51,7 +51,9 @@ gpt.add_example(
 gpt.add_example(
     Example('I am a girl at 27 with lung cancer. I come from Japan. What is my risk of anemia?',
             'lung cancer, anemia, 27, female'))
-
+gpt.add_example(
+    Example("What's the risk of having diabetes if I have fatty liver?",
+            'fatty liver, diabetes, na, na'))
 
 # I am a 65-year-old male. I had strke. What is my risk of epilepsy?
 # I am a white American guy at 47 with migraine. What is my risk of stroke?
@@ -115,17 +117,19 @@ def processAnswer(answer):
         disease_list_post = [diag for diag in outcome_list if disease_post.strip() in diag.lower()]
         disease_pair = list(itertools.product(disease_list_pre, disease_list_post))
         possible_disease_pair = [i for i in disease_pair if i in endpoint_list]
-        print(disease_pre)
+        print('disease_pre: ' + str(disease_pre))
+        print('possible_disease_pair: ' + str(possible_disease_pair))
         print()
-        print(possible_disease_pair)
 
         if len(possible_disease_pair) == 0:
             ratio_pre = process.extract(disease_pre.lower().capitalize(),prior_list)
             disease_list_pre = [i[0] for i in ratio_pre]
-            ratio_post = process.extract(disease_pre.lower().capitalize(),outcome_list)
+            ratio_post = process.extract(disease_post.lower().capitalize(),outcome_list)
             disease_list_post = [i[0] for i in ratio_post]
             disease_pair = list(itertools.product(disease_list_pre, disease_list_post))
             possible_disease_pair = [i for i in disease_pair if i in endpoint_list]
+            print('disease_list_post: '+ str(disease_list_post))
+            print('possible_disease_pair: ' + str(possible_disease_pair))
 
         if len(possible_disease_pair) > 1:
             question_index['pair'] = 1
