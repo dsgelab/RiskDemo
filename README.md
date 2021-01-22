@@ -8,7 +8,7 @@
 - Comparisons among the results using different engines
 
 questions | answers	| davinci | curie | babbage | ada
----------   -------   -------   -----   -------   ---
+--------- | ------- | ------- | ----- | ------- | ---
 What is my risk of angina if I am a female with a history of heart attack? | ['heart attack', 'angina', 'na', 'female] | ['heart attack', 'angina', 'na', 'female] | ['heart attack', 'angina', 'na', 'female] | ['heart attack', 'angina', 'female', 'na'] | ['heart attack', 'angina', 'na', 'female']
 What's the risk of having cancer if I have heart attavk? | ['heart attack', 'cancer', 'na', 'na'] | ['cancer', 'heart attack', 'na', 'na'] | ['heart attack', 'cancer', 'na', 'na'] | ['cancer', 'heart attavk', 'na', 'na'] | ['heart attavk', 'cancer', 'na', 'na']
 If I am a girl at 24 with cancer, what's my risk of having diabeties? | ['cancer', 'diabetes', '24', 'female'] | ['cancer', 'diabetes', '24', 'female'] | ['cancer', 'diabeties', '24', 'female'] | ['cancer', 'diabetes', '24', 'female'] | ['cancer', 'diabeties', 'na', 'na']
