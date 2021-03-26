@@ -12,12 +12,11 @@ import itertools
 app = Flask(__name__, static_url_path='')
 
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://gpt3:YQkwRnR!@X&FVV%&5)Xs5QnYezh*XH5g2Ej432q8w*w&weeFioNxksY8guAd@vDg@localhost:5432/risteys_blue_r6')
+engine = create_engine('postgresql://gpt3')
 
 global gpt
 
-# openai.api_key = "sk-MKxaEJsHbFyW5U7bP2e0d2B9mzpoAxuWQ73sDmo2" #old
-openai.api_key = "sk-BOwN8oP1QsmOe2SaXqnuy7U65UkPm1f72xGAYsRm" #new
+openai.api_key = "" 
 
 gpt = GPT(engine="curie",
           temperature=0,
