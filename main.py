@@ -69,7 +69,7 @@ gpt.add_example(
 # I am a 65-year-old white American male. I had stroke. What is my risk of epilepsy?
 
 
-with open('endpoint_list.json') as f:
+with open('/Users/feiwang/Documents/Data/endpoint_list.json') as f:
     endpoint_list = json.load(f)
 endpoint_list = [(i[0], i[1]) for i in endpoint_list]
 prior_list = set(list(zip(*endpoint_list))[0])

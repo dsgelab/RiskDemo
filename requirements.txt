@@ -5,3 +5,4 @@ lifelines==0.25.11
 flask==1.1.2
 fuzzywuzzy==0.18.0
 sqlalchemy==1.4.11
+psycopg2-binary==2.8.6
