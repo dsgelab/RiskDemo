@@ -1,0 +1,7 @@
+numpy==1.20.2
+pandas==1.2.4
+openai==0.6.3
+lifelines==0.25.11
+flask==1.1.2
+fuzzywuzzy==0.18.0
+sqlalchemy==1.4.11

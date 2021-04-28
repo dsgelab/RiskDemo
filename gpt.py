@@ -1,8 +1,10 @@
 import openai
 import uuid
 
+
 class Example:
     """Stores an input, output pair and formats it to prime the model."""
+
     def __init__(self, inp, out):
         self.input = inp
         self.output = out
@@ -27,10 +29,12 @@ class Example:
             "id": self.get_id(),
         }
 
+
 class GPT:
     """The main class for a user to interface with the OpenAI API.
     A user can add examples and set parameters of the API request.
     """
+
     def __init__(self,
                  engine='davinci',
                  temperature=0.5,
@@ -121,9 +125,9 @@ class GPT:
         ) + self.input_suffix + self.output_prefix + ex.get_output(
         ) + self.output_suffix
 
-def get_answer(prompt):
-    response = gpt.submit_request(prompt)
-    offset = 0
-    if not gpt.append_output_prefix_to_query:
-        offset = len(gpt.output_prefix)
-    return response['choices'][0]['text'][offset:-len(gpt.output_suffix)]
+# def get_answer(prompt):
+#    response = gpt.submit_request(prompt)
+#    offset = 0
+#    if not gpt.append_output_prefix_to_query:
+#        offset = len(gpt.output_prefix)
+#    return response['choices'][0]['text'][offset:-len(gpt.output_suffix)]
