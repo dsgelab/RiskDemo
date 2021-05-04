@@ -11,6 +11,12 @@ import json
 import itertools
 from sqlalchemy import create_engine
 
+from sklearn.metrics.pairwise import cosine_similarity
+import transformers
+from sentence_transformers import SentenceTransformer, LoggingHandler
+
+
+
 engine = create_engine('postgresql://gpt3')
 
 global gpt

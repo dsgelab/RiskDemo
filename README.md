@@ -1,6 +1,13 @@
 ## GPT Demo
 
-- Use "python3 main.py" to run the demo. Meanwhile, a finngen-risteys vm is a must. To tunnel the database risteys is using, ssh -NL port:database_IP_addr:port username@vm_external_IP. 
+### Setup
+```bash
+git clone https://github.com/dsgelab/RiskDemo.git
+cd RiskDemo
+pip3 install -r requirements.txt
+python3 main.py
+```
+- A finngen-risteys vm is a must. To tunnel the database Risteys is using, ssh -NL port:database_IP_addr:port username@vm_external_IP. 
 
 - A Q&A demo for users to get a database query, simple python code to calculate disease risk when they ask a question such as "If I have disease A and I am a guy at 45, what is my risk of having disease B?". Users can obtain the risk calculated by the machine at the same time.
 
